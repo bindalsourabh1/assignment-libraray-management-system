@@ -4,22 +4,19 @@ from auth import Auth
 
 app = Flask(__name__)
 
-# Token Authentication Decorator
 def require_token(func):
     def decorated_function(*args, **kwargs):
         token = request.headers.get("Authorization")
         if not token or not Auth.verify_token(token):
             return jsonify({"message": "Unauthorized"}), 401
         return func(*args, **kwargs)
-    decorated_function.__name__ = func.__name__  # Preserve the original function name for Flask
+    decorated_function.__name__ = func.__name__  
     return decorated_function
 
-# Health Check Endpoint
 @app.route("/", methods=["GET"])
 def home():
     return jsonify({"message": "Library Management System API is running."})
 
-# Generate Token Endpoint
 @app.route("/auth/token", methods=["POST"])
 def get_token():
     user = request.json.get("user")
@@ -28,7 +25,6 @@ def get_token():
     token = Auth.generate_token(user)
     return jsonify({"token": token})
 
-# Create Book Endpoint
 @app.route("/books", methods=["POST"])
 @require_token
 def create_book():
@@ -38,7 +34,6 @@ def create_book():
     book_id = Book.create_book(data)
     return jsonify({"message": "Book created.", "book_id": book_id}), 201
 
-# Get Books with Pagination and Search
 @app.route("/books", methods=["GET"])
 @require_token
 def get_books():
@@ -48,7 +43,6 @@ def get_books():
     books = Book.get_books(offset=offset, limit=limit, search=search)
     return jsonify(books)
 
-# Update Book Endpoint
 @app.route("/books/<int:book_id>", methods=["PUT"])
 @require_token
 def update_book(book_id):
@@ -60,7 +54,6 @@ def update_book(book_id):
         return jsonify({"message": "Book updated."})
     return jsonify({"message": "Book not found."}), 404
 
-# Delete Book Endpoint
 @app.route("/books/<int:book_id>", methods=["DELETE"])
 @require_token
 def delete_book(book_id):
