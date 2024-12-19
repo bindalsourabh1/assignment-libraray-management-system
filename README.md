@@ -114,41 +114,34 @@ Request body:
 DELETE /books/<book_id>
 ```
 
-## Technical Details
+## Design Choices
 
 ### Framework
-Flask was chosen for its minimalist approach and suitability for RESTful APIs.
+Flask was chosen for its simplicity and suitability for small-scale RESTful APIs.
 
 ### Database
-SQLite is used for its:
-- Simple setup process
-- Zero-configuration nature
-- Suitability for development and testing
-- Self-contained database file
+SQLite was selected for its ease of use in development and testing environments.
 
-### Project Structure
-- `app.py`: Main application logic and route handlers
-- `models.py`: Database models and operations
-- `auth.py`: Authentication implementation
+### Authentication
+A lightweight token-based authentication mechanism was implemented using simple string tokens for user verification.
 
-## Limitations and Considerations
+### Pagination
+Offset and limit parameters were added to ensure scalability for large datasets.
 
-### Development Configuration
-- Basic token-based authentication
-- SQLite database (suitable for development)
-- No SSL/TLS configuration
+### Modular Structure
+The project is divided into distinct modules:
+- `app.py`: Contains the main Flask application
+- `models.py`: Handles database models and operations
+- `auth.py`: Manages authentication logic
 
-### Production Recommendations
-- Implement proper JWT authentication
-- Consider PostgreSQL for better concurrency
-- Add SSL/TLS support
-- Implement request rate limiting
-- Add proper logging
+## Assumptions and Limitations
 
-## Future Development
+### Assumptions
+- Users must generate a token before accessing authenticated endpoints
+- The token mechanism is basic and suited for demonstration purposes
+- Search functionality only looks for exact matches in book titles or authors
 
-Planned features:
-- Advanced search capabilities
-- Batch operations
-- Data export/import functionality
-- User roles and permissions
+### Limitations
+- **Security**: Tokens are basic and unencrypted. We can use JWT for secure production environments.
+- **Concurrency**: SQLite is ideal for development but unsuitable for high-concurrency production use.
+- **HTTPS**: The API lacks SSL; deploy behind a secure server for encrypted communication.
